@@ -1,0 +1,103 @@
+#!/usr/bin/env ruby
+
+#
+# @author El Chacal Del Útero
+#
+# @version 1.0
+#
+# @created 20111105
+#
+# @require gems [sass, sprockets 1.0.2, yui/compressor]
+#
+
+# system
+require 'fileutils'
+require 'pathname'
+require 'yaml'
+# gems
+require 'rubygems'
+require 'sass'
+require 'sprockets'
+require 'yui/compressor'
+
+# configuration file
+config_file = ARGV[0] || "config.yaml"
+
+# yaml structure
+# @config
+#   @compress bool
+#   @common_path string
+#   @common_output string
+#   @common_dependencies []
+#   @file string
+#     @name string
+#     @extension string
+#     @type string
+#     @major int
+#     @minor int
+#     @bugfix int
+#     @compilation int
+#     @compress bool
+#     @dependencies []
+#     @output string
+
+if File.exists?(config_file)
+  config = ::YAML::load_file(config_file)["config"]
+  files = config["files"]
+
+  files.each do |filename, opts|
+    # set file path and name
+    filename = (config["common_path"]) ? config["common_path"] + filename : filename
+    f_name = Pathname.new(filename)
+    t_name = (%[#{opts["name"]}.#{opts["major"]}.#{opts["minor"]}.#{opts["bugfix"]}.#{opts["compilation"]}.#{opts["extension"]}])
+    t_file = f_name.dirname + t_name
+    concatenation = ""
+    # merge paths
+    paths = config["common_dependencies"] | (opts["dependencies"] || [] << File.expand_path(t_file.dirname.to_s))
+    # set common_path
+    if config["common_path"]
+      paths.each_with_index do |n, i|
+        paths[i] = config["common_path"] + n;
+      end
+    end
+    # merge sources
+    sources = [] << File.expand_path(filename)
+    # do magic
+    if opts["type"] == "css" or opts["extension"] == "css"
+      content = File.read(filename)
+      # convert sass to css
+      sass = ::Sass::Engine.new(content, :load_paths => paths, :style => (opts["style"] && opts["style"].to_sym) || :expanded)
+      concatenation = sass.render
+    else
+      # sprockets
+      secretary = ::Sprockets::Secretary.new(
+        :load_path    => paths,
+        :source_files => sources
+      )
+      concatenation = secretary.concatenation.to_s
+    end
+    # compress
+    if config["compress"] and opts["compress"].nil? or opts["compress"]
+      if opts["type"] == "css" or opts["extension"] == "css"
+        # compress css
+        compressor = ::YUI::CssCompressor.new
+      else
+        # compress js
+        compressor = ::YUI::JavaScriptCompressor.new(:munge => true)
+      end
+      concatenation = compressor.compress(concatenation)
+    end
+    t_file.open('w') { |io| io.puts concatenation }
+    # set custom output
+    if opts["output"] or config["common_output"]
+      output = ""
+      if config["common_output"]
+        output = config["common_output"]
+      end
+      if opts["output"]
+        output += opts["output"]
+      end
+      FileUtils.mv(t_file, output + t_name)
+    end
+  end
+end
