@@ -1,0 +1,17 @@
+config :
+  compress: false
+  common_path : /work/
+  common_output : /work/
+  common_dependencies : [
+    javascripts/debug/src/,
+    javascripts/debug/src/core/
+  ]
+  files :
+    javascripts/all.js :
+      name         : all
+      extension    : js
+      major        : 1
+      minor        : 0
+      bugfix       : 0
+      compilation  : 0
+      output       : javascripts/
