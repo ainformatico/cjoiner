@@ -17,7 +17,7 @@ Join css and js assets and create a versioned file.
 
 Author
 ----------------------------------------
-El Chacal Del Útero
+Alejandro El Informático
 
 Usage
 ----------------------------------------
