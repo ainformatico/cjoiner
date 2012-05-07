@@ -32,6 +32,8 @@ config_file = ARGV[0] || "config.yaml"
 #   @standalone bool
 #   @yui string
 #   @charset string
+#   @debug
+#   @debug_suffix
 #   @common_path string
 #   @common_output string
 #   @common_dependencies []
@@ -53,6 +55,8 @@ if File.exists?(config_file)
   config["munge"] = (config["munge"] == false) ? false : true
   config["charset"] = config["charset"] || "utf-8"
   config["standalone"] = config["standalone"] || false
+  config["debug"] = config["debug"] || false
+  config["debug_suffix"] = config["debug_suffix"] || "debug"
   files = config["files"]
 
   files.each do |filename, opts|
@@ -60,8 +64,11 @@ if File.exists?(config_file)
     filename = (config["common_path"]) ? config["common_path"] + filename : filename
     f_name = Pathname.new(filename)
     t_name = (%[#{opts["name"]}.#{opts["major"]}.#{opts["minor"]}.#{opts["bugfix"]}.#{opts["compilation"]}.#{opts["extension"]}])
+    d_name = (%[#{opts["name"]}.#{config["debug_suffix"]}.#{opts["extension"]}])
     t_file = f_name.dirname + t_name
+    d_file = f_name.dirname + d_name
     concatenation = ""
+    compressed = ""
     # merge paths
     paths = config["common_dependencies"] | (opts["dependencies"] || [] << File.expand_path(t_file.dirname.to_s))
     # set common_path
@@ -95,11 +102,11 @@ if File.exists?(config_file)
           temp = File.new(temp_file, "w")
           temp.write(concatenation)
           temp.close
-          concatenation = `java -jar #{config["yui"]} --charset #{config["charset"]} --type css #{temp_file}`
+          compressed = `java -jar #{config["yui"]} --charset #{config["charset"]} --type css #{temp_file}`
           File.delete(temp_file)
         else
           compressor = ::YUI::CssCompressor.new
-          concatenation = compressor.compress(concatenation)
+          compressed = compressor.compress(concatenation)
         end
       else
         if config["standalone"]
@@ -108,15 +115,18 @@ if File.exists?(config_file)
           temp.write(concatenation)
           temp.close
           munge = !config["munge"] ? "--nomunge" : ""
-          concatenation = `java -jar #{config["yui"]} #{munge} --charset #{config["charset"]} --type js #{temp_file}`
+          compressed = `java -jar #{config["yui"]} #{munge} --charset #{config["charset"]} --type js #{temp_file}`
           File.delete(temp_file)
         else
           compressor = ::YUI::JavaScriptCompressor.new(:munge => config["munge"], :charset => config["charset"])
-          concatenation = compressor.compress(concatenation)
+          compressed = compressor.compress(concatenation)
         end
       end
     end
-    t_file.open("w") { |io| io.puts concatenation }
+    if config["debug"]
+      d_file.open("w") { |io| io.puts concatenation }
+    end
+    t_file.open("w") { |io| io.puts compressed }
     # set custom output
     if opts["output"] or config["common_output"]
       output = ""
@@ -127,6 +137,9 @@ if File.exists?(config_file)
         output += opts["output"]
       end
       FileUtils.mv(t_file, output + t_name)
+      if config["debug"]
+        FileUtils.mv(d_file, output + d_name)
+      end
     end
   end
 end

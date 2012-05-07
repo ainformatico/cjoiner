@@ -34,6 +34,8 @@ Usage
   * `yui`: the _yui-compressor_ java file
   * `munge`: short the variable names
   * `charset`: set the charset
+  * `debug`: file without compression
+  * `debug_suffix`: suffix to `debug` file
   * `common_dependencies`: dependencies array
   * `common_path`: all items common path
   * `common_output`: all items output
