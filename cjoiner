@@ -3,9 +3,11 @@
 #
 # @author Alejandro El Informático
 #
-# @version 1.0
+# @version 1.1.0
 #
 # @created 20111105
+#
+# @modified 20120507
 #
 # @require gems [sass, sprockets 1.0.2, yui/compressor]
 #
@@ -26,6 +28,10 @@ config_file = ARGV[0] || "config.yaml"
 # yaml structure
 # @config
 #   @compress bool
+#   @munge bool
+#   @standalone bool
+#   @yui string
+#   @charset string
 #   @common_path string
 #   @common_output string
 #   @common_dependencies []
@@ -43,6 +49,10 @@ config_file = ARGV[0] || "config.yaml"
 
 if File.exists?(config_file)
   config = ::YAML::load_file(config_file)["config"]
+  config["yui"] = config["yui"] || "yuicompressor-2.4.7.jar"
+  config["munge"] = (config["munge"] == false) ? false : true
+  config["charset"] = config["charset"] || "utf-8"
+  config["standalone"] = config["standalone"] || false
   files = config["files"]
 
   files.each do |filename, opts|
@@ -80,14 +90,33 @@ if File.exists?(config_file)
     if config["compress"] and opts["compress"].nil? or opts["compress"]
       if opts["type"] == "css" or opts["extension"] == "css"
         # compress css
-        compressor = ::YUI::CssCompressor.new
+        if config["standalone"]
+          temp_file = "_cjoiner_tmp.css"
+          temp = File.new(temp_file, "w")
+          temp.write(concatenation)
+          temp.close
+          concatenation = `java -jar #{config["yui"]} --charset #{config["charset"]} --type css #{temp_file}`
+          File.delete(temp_file)
+        else
+          compressor = ::YUI::CssCompressor.new
+          concatenation = compressor.compress(concatenation)
+        end
       else
-        # compress js
-        compressor = ::YUI::JavaScriptCompressor.new(:munge => true)
+        if config["standalone"]
+          temp_file = "_cjoiner_tmp.js"
+          temp = File.new(temp_file, "w")
+          temp.write(concatenation)
+          temp.close
+          munge = !config["munge"] ? "--nomunge" : ""
+          concatenation = `java -jar #{config["yui"]} #{munge} --charset #{config["charset"]} --type js #{temp_file}`
+          File.delete(temp_file)
+        else
+          compressor = ::YUI::JavaScriptCompressor.new(:munge => config["munge"], :charset => config["charset"])
+          concatenation = compressor.compress(concatenation)
+        end
       end
-      concatenation = compressor.compress(concatenation)
     end
-    t_file.open('w') { |io| io.puts concatenation }
+    t_file.open("w") { |io| io.puts concatenation }
     # set custom output
     if opts["output"] or config["common_output"]
       output = ""

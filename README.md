@@ -30,6 +30,10 @@ Usage
 
 * `config`: configuration wrapper
   * `compress`: set compression
+  * `standalone`: set as standalone, you must set the `yui` attr
+  * `yui`: the _yui-compressor_ java file
+  * `munge`: short the variable names
+  * `charset`: set the charset
   * `common_dependencies`: dependencies array
   * `common_path`: all items common path
   * `common_output`: all items output
