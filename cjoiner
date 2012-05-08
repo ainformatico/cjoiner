@@ -7,7 +7,7 @@
 #
 # @created 20111105
 #
-# @modified 20120507
+# @modified 20120508
 #
 # @require gems [sass, sprockets 1.0.2, yui/compressor]
 #
@@ -32,8 +32,8 @@ config_file = ARGV[0] || "config.yaml"
 #   @standalone bool
 #   @yui string
 #   @charset string
-#   @debug
-#   @debug_suffix
+#   @debug bool
+#   @debug_suffix string
 #   @common_path string
 #   @common_output string
 #   @common_dependencies []
@@ -126,7 +126,7 @@ if File.exists?(config_file)
     if config["debug"]
       d_file.open("w") { |io| io.puts concatenation }
     end
-    t_file.open("w") { |io| io.puts compressed }
+    t_file.open("w") { |io| io.puts compressed != "" ? compressed : concatenation}
     # set custom output
     if opts["output"] or config["common_output"]
       output = ""
