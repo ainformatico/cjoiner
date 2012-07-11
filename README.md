@@ -29,27 +29,27 @@ Usage
 `config.yaml`
 
 * `config`: configuration wrapper
-  * `compress`: set compression
-  * `standalone`: set as standalone, you must set the `yui` attr
-  * `yui`: the _yui-compressor_ java file
-  * `munge`: short the variable names
-  * `charset`: set the charset
-  * `debug`: file without compression
-  * `debug_suffix`: suffix to `debug` file
-  * `common_dependencies`: dependencies array
-  * `common_path`: all items common path
-  * `common_output`: all items output
-  * `file`: asset file, join `common_path`
-    * `name`: output name
-    * `extension`: output extension
-    * `type`: file type, `css` or `js`
-    * `major`: major release
-    * `minor`: minor release
-    * `bugfix`: bugfix number
-    * `compilation`: compilation number
-    * `compress`: set compresion
-    * `dependencies`: custom dependencies array
-    * `output`: file output, join `common_output`
+    * `compress`: set compression
+    * `standalone`: set as standalone, you must set the `yui` attr
+    * `yui`: the _yui-compressor_ java file
+    * `munge`: short the variable names
+    * `charset`: set the charset
+    * `debug`: file without compression
+    * `debug_suffix`: suffix to `debug` file
+    * `common_dependencies`: dependencies array
+    * `common_path`: all items common path
+    * `common_output`: all items output
+    * `file`: asset file, join `common_path`
+        * `name`: output name
+        * `extension`: output extension
+        * `type`: file type, `css` or `js`
+        * `major`: major release
+        * `minor`: minor release
+        * `bugfix`: bugfix number
+        * `compilation`: compilation number
+        * `compress`: set compresion
+        * `dependencies`: custom dependencies array
+        * `output`: file output, join `common_output`
 
 Requirements
 ----------------------------------------
