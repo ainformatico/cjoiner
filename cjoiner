@@ -3,11 +3,11 @@
 #
 # @author Alejandro El Informático
 #
-# @version 1.1.1
+# @version 1.1.2
 #
 # @created 20111105
 #
-# @modified 20120508
+# @modified 20120714
 #
 # @require gems [sass, sprockets 1.0.2, yui/compressor]
 #
@@ -16,6 +16,7 @@
 require 'fileutils'
 require 'pathname'
 require 'yaml'
+require 'tempfile'
 # gems
 require 'rubygems'
 require 'sass'
@@ -98,25 +99,19 @@ if File.exists?(config_file)
       if opts["type"] == "css" or opts["extension"] == "css"
         # compress css
         if config["standalone"]
-          temp_file = "_cjoiner_tmp.css"
-          temp = File.new(temp_file, "w")
-          temp.write(concatenation)
+          temp = Tempfile.new("cjoiner.css") << concatenation
           temp.close
-          compressed = `java -jar #{config["yui"]} --charset #{config["charset"]} --type css #{temp_file}`
-          File.delete(temp_file)
+          compressed = `java -jar #{config["yui"]} --charset #{config["charset"]} --type css #{temp.path}`
         else
           compressor = ::YUI::CssCompressor.new
           compressed = compressor.compress(concatenation)
         end
       else
         if config["standalone"]
-          temp_file = "_cjoiner_tmp.js"
-          temp = File.new(temp_file, "w")
-          temp.write(concatenation)
-          temp.close
+          temp = Tempfile.new("cjoiner.js") << concatenation
           munge = !config["munge"] ? "--nomunge" : ""
-          compressed = `java -jar #{config["yui"]} #{munge} --charset #{config["charset"]} --type js #{temp_file}`
-          File.delete(temp_file)
+          temp.close
+          compressed = `java -jar #{config["yui"]} #{munge} --charset #{config["charset"]} --type js #{temp.path}`
         else
           compressor = ::YUI::JavaScriptCompressor.new(:munge => config["munge"], :charset => config["charset"])
           compressed = compressor.compress(concatenation)
