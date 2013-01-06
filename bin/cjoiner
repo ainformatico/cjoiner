@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'cjoiner'
+
+#
+# Author:: Alejandro El Informático
+#
+# Created:: 20130106
+#
+
+# configuration file
+config_file = ARGV[0] || "config.yaml"
+begin
+  puts "no file given, using the default configuration file: '#{config_file}'" unless ARGV[0]
+  puts "loading configuration from '#{config_file}'..."
+  cjoiner = Cjoiner::Joiner.new
+  cjoiner.load_config! config_file
+  cjoiner.proccess!
+rescue Cjoiner::Errors::FileNotFound
+  puts "File '#{config_file}' not found!"
+end
