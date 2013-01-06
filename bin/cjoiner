@@ -3,12 +3,6 @@
 # -*- encoding: utf-8 -*-
 require 'cjoiner'
 
-#
-# Author:: Alejandro El Informático
-#
-# Created:: 20130106
-#
-
 # configuration file
 config_file = ARGV[0] || "config.yaml"
 begin

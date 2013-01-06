@@ -14,18 +14,6 @@ require 'sass'
 require 'sprockets'
 require 'yui/compressor'
 
-#
-# @author Alejandro El Informático
-#
-# @version 1.1.2
-#
-# @created 20111105
-#
-# @modified 20120714
-#
-# @require gems [sass, sprockets 1.0.2, yui/compressor]
-#
-
 # yaml structure
 # @config
 #   @compress bool
@@ -50,7 +38,8 @@ require 'yui/compressor'
 #     @dependencies []
 #     @output string
 
-module Cjoiner
+module Cjoiner #:nodoc
+  # main class
   class Joiner
     # load the configuration file
     def load_config!(config_file)
