@@ -4,9 +4,6 @@ module Cjoiner
   module Errors
     # a file was not found
     class FileNotFound < StandardError
-      def initialize
-        @message = "File not found"
-      end
     end
   end
 end

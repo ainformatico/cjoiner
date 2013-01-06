@@ -1,18 +1,14 @@
 # -*- encoding: utf-8 -*-
 require "cjoiner/version"
 require "cjoiner/errors"
+require "cjoiner/helpers"
+require "cjoiner/engine"
 
 # system
-require 'fileutils'
 require 'pathname'
-require 'yaml'
-require 'tempfile'
 
 # gems
 require 'rubygems'
-require 'sass'
-require 'sprockets'
-require 'yui/compressor'
 
 # yaml structure
 # @config
@@ -41,14 +37,10 @@ require 'yui/compressor'
 module Cjoiner #:nodoc
   # main class
   class Joiner
+    include Cjoiner::Helpers::Files
     # load the configuration file
     def load_config!(config_file)
-      if File.exists?(config_file)
-        loaded_config = ::YAML::load_file(config_file)["config"]
-        @config.merge!(loaded_config)
-      else
-        raise Cjoiner::Errors::FileNotFound
-      end
+      @config.merge! load_yaml(config_file)["config"]
     end
 
     #process all the configuration
@@ -76,47 +68,35 @@ module Cjoiner #:nodoc
         sources = [] << File.expand_path(file_full_path)
         # do magic
         if file_opts["type"] == "css" or file_opts["extension"] == "css"
-          content = File.read(file_full_path)
-          # convert sass to css
-          sass = ::Sass::Engine.new(content, :load_paths => paths, :style => (file_opts["style"] && file_opts["style"].to_sym) || :expanded)
-          concatenation = sass.render
+          concatenation = Cjoiner::Engines::Css.new(
+          {
+            :content => read_file(file_full_path),
+            :paths   => paths,
+            :style   => file_opts["style"]
+          }).render
         else
-          # sprockets
-          secretary = ::Sprockets::Secretary.new(
-            :load_path    => paths,
-            :source_files => sources
-          )
-          concatenation = secretary.concatenation.to_s
+          concatenation = Cjoiner::Engines::JsJoiner.new(
+          {
+            :paths   => paths,
+            :sources => sources
+          }).render
         end
         # compress
         if @config["compress"] and file_opts["compress"].nil? or file_opts["compress"]
-          if file_opts["type"] == "css" or file_opts["extension"] == "css"
-            # compress css
-            if @config["standalone"]
-              temp = Tempfile.new("cjoiner.css") << concatenation
-              temp.close
-              puts = "java -jar #{@config['yui']} --charset #{@config['charset']} --type css #{temp.path}"
-              compressed = `java -jar #{@config["yui"]} --charset #{@config["charset"]} --type css #{temp.path}`
-            else
-              compressor = ::YUI::CssCompressor.new
-              compressed = compressor.compress(concatenation)
-            end
-          else
-            if @config["standalone"]
-              temp = Tempfile.new("cjoiner.js") << concatenation
-              munge = !@config["munge"] ? "--nomunge" : ""
-              temp.close
-              compressed = `java -jar #{@config["yui"]} #{munge} --charset #{@config["charset"]} --type js #{temp.path}`
-            else
-              compressor = ::YUI::JavaScriptCompressor.new(:munge => @config["munge"], :charset => @config["charset"])
-              compressed = compressor.compress(concatenation)
-            end
-          end
+          # compress css
+          compressed = Cjoiner::Engines::Compressor.new(
+          {
+            :type       => file_opts["extension"].to_sym,
+            :standalone => @config["standalone"],
+            :yui        => @config['yui'],
+            :charset    => @config['charset'],
+            :content    => concatenation
+          }).render
         end
         if @config["debug"]
-          d_file.open("w") { |io| io.puts concatenation }
+          write_file d_file, concatenation
         end
-        t_file.open("w") { |io| io.puts compressed != "" ? compressed : concatenation}
+        write_file t_file, compressed != "" ? compressed : concatenation
         # set custom output
         if file_opts["output"] or @config["common_output"]
           output = ""
@@ -126,9 +106,9 @@ module Cjoiner #:nodoc
           if file_opts["output"]
             output += file_opts["output"]
           end
-          FileUtils.mv(t_file, output + output_name)
+          move_file t_file, output + output_name
           if @config["debug"]
-            FileUtils.mv(d_file, output + debug_name)
+            move_file d_file, output + debug_name
           end
         end
       end
