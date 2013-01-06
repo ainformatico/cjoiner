@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 module Cjoiner
   module Errors
     class FileNotFound < StandardError

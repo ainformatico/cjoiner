@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 require "cjoiner/version"
 require "cjoiner/errors"
 
