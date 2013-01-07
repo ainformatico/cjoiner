@@ -14,7 +14,6 @@ require 'rubygems'
 # @config
 #   @compress bool
 #   @munge bool
-#   @standalone bool
 #   @yui string
 #   @charset string
 #   @debug bool
@@ -87,7 +86,6 @@ module Cjoiner #:nodoc
           compressed = Cjoiner::Engines::Compressor.new(
           {
             :type       => file_opts["extension"].to_sym,
-            :standalone => @config["standalone"],
             :yui        => @config['yui'],
             :charset    => @config['charset'],
             :content    => concatenation
@@ -118,10 +116,9 @@ module Cjoiner #:nodoc
     def initialize(config = {})
       @config =
       {
-        "yui"          => 'yuicompressor-2.4.7.jar',
+        "yui"          => false,
         "munge"        => true,
         "charset"      => 'utf-8',
-        "standalone"   => false,
         "debug"        => false,
         "debug_suffix" => 'debug',
         "common_path"  => ''

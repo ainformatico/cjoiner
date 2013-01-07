@@ -6,7 +6,7 @@ module Cjoiner
     class Compressor < Cjoiner::Engines::Engine
       def initialize(opts)
         # use the standalone java jar file
-        if opts[:standalone]
+        if opts[:yui]
           temp = temp_file "cjoiner.#{opts[:type]}", opts[:content]
           munge = !opts[:munge] ? "--nomunge" : ""
           @engine = `java -jar #{opts[:yui]} #{munge} --charset #{opts[:charset]} --type #{opts[:type]} #{temp.path}` if file_exists opts[:yui]
