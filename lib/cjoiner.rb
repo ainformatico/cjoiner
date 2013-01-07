@@ -122,6 +122,7 @@ module Cjoiner #:nodoc
         "charset"      => 'utf-8',
         "debug"        => false,
         "debug_suffix" => 'debug',
+        "compress"     => false,
         "common_path"  => ''
       }.merge(config)
     end
