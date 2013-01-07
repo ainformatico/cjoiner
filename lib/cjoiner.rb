@@ -48,21 +48,21 @@ module Cjoiner #:nodoc
       @config["files"].each do |filename, file_opts|
         # set file path and name
         file_full_path = @config["common_path"] + filename
-        full_filename = Pathname.new(file_full_path)
-        output_name = %[#{file_opts["name"]}.#{file_opts["major"]}.#{file_opts["minor"]}.#{file_opts["bugfix"]}.#{file_opts["compilation"]}.#{file_opts["extension"]}]
-        debug_name = %[#{file_opts["name"]}.#{@config["debug_suffix"]}.#{file_opts["extension"]}]
-        t_file = full_filename.dirname + output_name
-        d_file = full_filename.dirname + debug_name
+        full_filename  = Pathname.new(file_full_path)
+        output_name    = %[#{file_opts["name"]}.#{file_opts["major"]}.#{file_opts["minor"]}.#{file_opts["bugfix"]}.#{file_opts["compilation"]}.#{file_opts["extension"]}]
+        debug_name     = %[#{file_opts["name"]}.#{@config["debug_suffix"]}.#{file_opts["extension"]}]
+        output_file    = full_filename.dirname + output_name
+        debug_file     = full_filename.dirname + debug_name
         # save all the concatenation
         concatenation = ""
         # save compressed content
         compressed = ""
         # merge common paths and specific file paths
-        paths = @config["common_dependencies"] | (file_opts["dependencies"] || [] << File.expand_path(t_file.dirname.to_s))
+        paths = @config["common_dependencies"] | (file_opts["dependencies"] || [] << File.expand_path(output_file.dirname.to_s))
         # prepend paths with common_path
         if @config["common_path"]
           paths.each_with_index do |n, i|
-            paths[i] = @config["common_path"] + n;
+            paths[i] = @config["common_path"] + n
           end
         end
         # source file[s]
@@ -75,7 +75,7 @@ module Cjoiner #:nodoc
             :paths   => paths,
             :style   => file_opts["style"]
           }).render
-        else
+        elsif file_opts["type"] == "js" or file_opts["extension"] == "js"
           concatenation = Cjoiner::Engines::JsJoiner.new(
           {
             :paths   => paths,
@@ -92,22 +92,19 @@ module Cjoiner #:nodoc
             :content    => concatenation
           }).render
         end
+        # save debug file
         if @config["debug"]
-          write_file d_file, concatenation
+          write_file debug_file, concatenation
         end
-        write_file t_file, compressed != "" ? compressed : concatenation
+        # save final file
+        write_file output_file, compressed != "" ? compressed : concatenation
         # set custom output
         if file_opts["output"] or @config["common_output"]
-          output = ""
-          if @config["common_output"]
-            output = @config["common_output"]
-          end
-          if file_opts["output"]
-            output += file_opts["output"]
-          end
-          move_file t_file, output + output_name
+          output = @config["common_output"] ? @config["common_output"] : ""
+          output += file_opts["output"] if file_opts["output"]
+          move_file output_file, output + output_name
           if @config["debug"]
-            move_file d_file, output + debug_name
+            move_file debug_file, output + debug_name
           end
         end
       end
