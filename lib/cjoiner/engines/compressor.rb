@@ -13,7 +13,7 @@ module Cjoiner
         else
           case opts[:type]
             when :css
-              compressor = ::YUI::CssCompressor.new
+              compressor = ::YUI::CssCompressor.new(:charset => opts[:charset])
             when :js
               compressor = ::YUI::JavaScriptCompressor.new(:munge => opts[:munge], :charset => opts[:charset])
           end
