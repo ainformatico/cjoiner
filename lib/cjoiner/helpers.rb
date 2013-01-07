@@ -1,3 +1,4 @@
+require 'yaml'
 require 'fileutils'
 require 'tempfile'
 require 'cjoiner/errors'
