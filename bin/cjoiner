@@ -11,6 +11,7 @@ begin
   cjoiner = Cjoiner::Joiner.new
   cjoiner.load_config! config_file
   cjoiner.proccess!
+  puts "all done!"
 rescue Cjoiner::Errors::FileNotFound => e
   puts "File '#{e.message}' not found!"
 end

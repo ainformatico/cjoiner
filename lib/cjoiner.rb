@@ -53,7 +53,9 @@ module Cjoiner #:nodoc
         debug_name = %[#{file_opts["name"]}.#{@config["debug_suffix"]}.#{file_opts["extension"]}]
         t_file = full_filename.dirname + output_name
         d_file = full_filename.dirname + debug_name
+        # save all the concatenation
         concatenation = ""
+        # save compressed content
         compressed = ""
         # merge common paths and specific file paths
         paths = @config["common_dependencies"] | (file_opts["dependencies"] || [] << File.expand_path(t_file.dirname.to_s))
@@ -82,7 +84,6 @@ module Cjoiner #:nodoc
         end
         # compress
         if @config["compress"] and file_opts["compress"].nil? or file_opts["compress"]
-          # compress css
           compressed = Cjoiner::Engines::Compressor.new(
           {
             :type       => file_opts["extension"].to_sym,
