@@ -70,7 +70,7 @@ module Cjoiner #:nodoc
           }).render
         end
         # save debug file
-        if @config["debug"]
+        if @config["debug"] or file_opts["debug"]
           write_file debug_file, concatenation
         end
         # save final file
@@ -80,7 +80,7 @@ module Cjoiner #:nodoc
           output = @config["common_output"] ? @config["common_output"] : ""
           output += file_opts["output"] if file_opts["output"]
           move_file output_file, output + output_name
-          if @config["debug"]
+          if @config["debug"] or file_opts["debug"]
             move_file debug_file, output + debug_name
           end
         end
