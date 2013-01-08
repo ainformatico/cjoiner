@@ -73,6 +73,7 @@ This is the skeleton for the configuration file or the data object:
             * `bugfix`: _{int}_ bugfix number
             * `compilation`: _{int}_ compilation number
             * `compress`: _{boolean}_ set compresion for this file, overrides general compression flag
+            * `debug`: _{boolean}_ set debug for this file, overrides general debug flag
             * `dependencies`: _{array}_ custom dependencies array for this file
             * `output`: _{string}_ file output assuming `common_output` as root
 
