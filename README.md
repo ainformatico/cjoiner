@@ -129,9 +129,8 @@ Will generate two compressed files and two debug files:
 Requirements
 ----------------------------------------
 * ruby 1.8
-  * rubygems > 1.3.7
-  * gems
-    * sprockets 1.0.2
-    * yui-compressor > 0.9.6
-    * sass > 3.1.4
-
+    * rubygems > 1.3.7
+    * gems
+        * sprockets 1.0.2
+        * yui-compressor > 0.9.6
+        * sass > 3.1.4
