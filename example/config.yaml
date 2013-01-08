@@ -1,0 +1,27 @@
+config :
+  common_path         : project/
+  common_output       : output/
+  debug               : true
+  compress            : true
+  common_dependencies : [
+    javascripts/src/,
+    javascripts/src/lib/,
+    javascripts/src/core/,
+    sass/
+  ]
+  files:
+    javascripts/all.js :
+      name         : all
+      extension    : js
+      major        : 1
+      minor        : 0
+      bugfix       : 0
+      compilation  : 0
+    sass/css.sass  :
+      name         : css
+      extension    : css
+      major        : 1
+      minor        : 0
+      bugfix       : 0
+      compilation  : 0
+      debug        : false
