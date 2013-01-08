@@ -30,6 +30,8 @@ module Cjoiner #:nodoc
         debug_name     = %[#{file_opts["name"]}.#{@config["debug_suffix"]}.#{file_opts["extension"]}]
         output_file    = full_filename.dirname + output_name
         debug_file     = full_filename.dirname + debug_name
+        debug         = (@config["debug"] and file_opts["debug"].nil? or file_opts["debug"])
+        custom_output = (@config["common_output"] and file_opts["output"].nil? or file_opts["output"])
         # save all the concatenation
         concatenation = ""
         # save compressed content
@@ -70,17 +72,17 @@ module Cjoiner #:nodoc
           }).render
         end
         # save debug file
-        if @config["debug"] or file_opts["debug"]
+        if debug
           write_file debug_file, concatenation
         end
         # save final file
         write_file output_file, compressed != "" ? compressed : concatenation
         # set custom output
-        if file_opts["output"] or @config["common_output"]
+        if custom_output
           output = @config["common_output"] ? @config["common_output"] : ""
           output += file_opts["output"] if file_opts["output"]
           move_file output_file, output + output_name
-          if @config["debug"] or file_opts["debug"]
+          if debug
             move_file debug_file, output + debug_name
           end
         end
