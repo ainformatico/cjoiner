@@ -10,29 +10,6 @@ require 'pathname'
 # gems
 require 'rubygems'
 
-# yaml structure
-# @config
-#   @compress bool
-#   @munge bool
-#   @yui string
-#   @charset string
-#   @debug bool
-#   @debug_suffix string
-#   @common_path string
-#   @common_output string
-#   @common_dependencies []
-#   @file string
-#     @name string
-#     @extension string
-#     @type string
-#     @major int
-#     @minor int
-#     @bugfix int
-#     @compilation int
-#     @compress bool
-#     @dependencies []
-#     @output string
-
 module Cjoiner #:nodoc
   # main class
   class Joiner
