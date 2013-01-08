@@ -129,7 +129,7 @@ Will generate two compressed files and two debug files:
 
 Requirements
 ----------------------------------------
-* ruby 1.8
+* ruby 1.8.7, 1.9.3
     * rubygems > 1.3.7
     * gems
         * sprockets 1.0.2
