@@ -26,6 +26,8 @@ module Cjoiner #:nodoc
         # set file path and name
         file_full_path = @config["common_path"] + filename
         full_filename  = Pathname.new(file_full_path)
+        #raise if the file does not exits
+        file_exists full_filename
         output_name    = %[#{file_opts["name"]}.#{file_opts["major"]}.#{file_opts["minor"]}.#{file_opts["bugfix"]}.#{file_opts["compilation"]}.#{file_opts["extension"]}]
         debug_name     = %[#{file_opts["name"]}.#{@config["debug_suffix"]}.#{file_opts["extension"]}]
         output_file    = full_filename.dirname + output_name
