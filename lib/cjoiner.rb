@@ -59,6 +59,14 @@ module Cjoiner #:nodoc
             :paths   => paths,
             :sources => sources
           }).render
+        elsif file_opts["type"] == "yaml"
+          files = load_yaml(full_filename)["files"].map! do |file|
+            @config["common_path"] + file
+          end
+          concatenation = Cjoiner::Engines::Joiner.new(
+          {
+            :files => files
+          }).render
         end
         # compress
         if @config["compress"] and file_opts["compress"].nil? or file_opts["compress"]

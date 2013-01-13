@@ -17,7 +17,11 @@ module Cjoiner
             when :js
               compressor = ::YUI::JavaScriptCompressor.new(:munge => opts[:munge], :charset => opts[:charset])
           end
-          @engine = compressor.compress(opts[:content])
+          if compressor
+            @engine = compressor.compress(opts[:content])
+          else
+            @engine = opts[:content]
+          end
         end
       end
     end
