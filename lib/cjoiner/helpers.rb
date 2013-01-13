@@ -23,6 +23,7 @@ module Cjoiner
 
       # move a file
       def move_file(from, to)
+        return false if from == to
         FileUtils.mv from, to
       end
 
