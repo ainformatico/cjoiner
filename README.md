@@ -143,10 +143,10 @@ Set file type to `yaml` and define sources in another `yaml` file:
 
 Will generate two compressed files and two debug files for javascript and sass files, and other file for the other files:
 
-1. `/work/project/output/all.1.0.0.0.js`
-2. `/work/project/output/all.debug.js`
-3. `/work/project/output/css.1.0.0.0.js`
-4. `/work/project/output/css.debug.js`
+1. `/work/project/output/javascripts/all.1.0.0.0.js`
+2. `/work/project/output/javascripts/all.debug.js`
+3. `/work/project/output/stylesheets/css.1.0.0.0.js`
+4. `/work/project/output/stylesheets/css.debug.js`
 5. `/work/project/output/files.1.1.1.1.output`
 
 Requirements
