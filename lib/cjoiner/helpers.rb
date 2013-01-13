@@ -1,6 +1,7 @@
 require 'yaml'
 require 'fileutils'
 require 'tempfile'
+require 'pathname'
 require 'cjoiner/errors'
 
 module Cjoiner
@@ -40,6 +41,16 @@ module Cjoiner
         temp = Tempfile.new(file) << data
         temp.close
         temp
+      end
+
+      # return Pathname.new.expand_path
+      def expand_path(file)
+        Pathname.new(file).expand_path
+      end
+
+      # use Pathname
+      def file(file)
+        Pathname.new file
       end
     end
   end

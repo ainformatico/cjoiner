@@ -4,9 +4,6 @@ require "cjoiner/errors"
 require "cjoiner/helpers"
 require "cjoiner/engine"
 
-# system
-require 'pathname'
-
 # gems
 require 'rubygems'
 
@@ -25,13 +22,13 @@ module Cjoiner #:nodoc
       @config["files"].each do |filename, file_opts|
         # set file path and name
         file_full_path = @config["common_path"] + filename
-        full_filename  = Pathname.new(file_full_path)
+        full_filename  = file(file_full_path)
         #raise if the file does not exits
         file_exists full_filename
         output_name    = %[#{file_opts["name"]}.#{file_opts["major"]}.#{file_opts["minor"]}.#{file_opts["bugfix"]}.#{file_opts["compilation"]}.#{file_opts["extension"]}]
         debug_name     = %[#{file_opts["name"]}.#{@config["debug_suffix"]}.#{file_opts["extension"]}]
-        output_file    = full_filename.dirname + output_name
-        debug_file     = full_filename.dirname + debug_name
+        output_file    = expand_path(full_filename.dirname + output_name)
+        debug_file     = expand_path(full_filename.dirname + debug_name)
         debug         = (@config["debug"] and file_opts["debug"].nil? or file_opts["debug"])
         custom_output = (@config["common_output"] and file_opts["output"].nil? or file_opts["output"])
         # save all the concatenation
@@ -83,9 +80,9 @@ module Cjoiner #:nodoc
         if custom_output
           output = @config["common_output"] ? @config["common_output"] : ""
           output += file_opts["output"] if file_opts["output"]
-          move_file output_file, output + output_name
+          move_file output_file, expand_path(output + output_name)
           if debug
-            move_file debug_file, output + debug_name
+            move_file debug_file, expand_path(output + debug_name)
           end
         end
       end
