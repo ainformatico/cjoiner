@@ -13,9 +13,9 @@ along with cjoiner. If not, see <http://www.gnu.org/licenses/>.
 
 cjoiner
 ========================================
-Join css and js assets and create a versioned file. It also supports compression.
+Join css, js or other text files and create a versioned file. It also supports compression.
 
-For now `cjoiner` is designed to work with javascript using [sprockets v.1.0.2](https://github.com/sstephenson/sprockets/tree/1.0.2) and css using [sass](http://sass-lang.com/)
+For now `cjoiner` is designed to work with javascript using [sprockets v.1.0.2](https://github.com/sstephenson/sprockets/tree/1.0.2) and css using [sass](http://sass-lang.com/), also you can join files using a `yaml` to define sources.
 
 Author
 ----------------------------------------
@@ -77,6 +77,14 @@ This is the skeleton for the configuration file or the data object:
             * `dependencies`: _{array}_ custom dependencies array for this file
             * `output`: _{string}_ file output assuming `common_output` as root
 
+##### Join text files
+Set file type to `yaml` and define sources in another `yaml` file:
+
+    files:
+      - file-1.extension
+      - file-2.extension
+      - file-3.extension
+
 #### Example
 
     $ cjoiner project.yaml
@@ -109,6 +117,13 @@ This is the skeleton for the configuration file or the data object:
           bugfix       : 0
           compilation  : 1
           output       : /stylesheets/
+        other.yaml :
+          name         : files
+          extension    : output
+          major        : 1
+          minor        : 1
+          bugfix       : 1
+          compilation  : 1
 
     ### all.js (sprockets file)
     //= require "lib.js"
@@ -120,12 +135,19 @@ This is the skeleton for the configuration file or the data object:
     @import mixins
     @import general
 
-Will generate two compressed files and two debug files:
+    ### other.yaml (other files)
+    files:
+      - file-1.extension
+      - file-2.extension
+      - file-3.extension
+
+Will generate two compressed files and two debug files for javascript and sass files, and other file for the other files:
 
 1. `/work/project/output/all.1.0.0.0.js`
 2. `/work/project/output/all.debug.js`
 3. `/work/project/output/css.1.0.0.0.js`
 4. `/work/project/output/css.debug.js`
+5. `/work/project/output/files.1.1.1.1.output`
 
 Requirements
 ----------------------------------------
