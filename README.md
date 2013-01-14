@@ -67,7 +67,7 @@ This is the skeleton for the configuration file or the data object:
         * `file`: _{string}_ path and name for file (assuming `common_path` as root) to process, ex: `javascripts/all.js`
             * `name`: _{string}_ output name
             * `extension`: _{string}_ output extension
-            * `type`: _{string}_ file type, `css` or `js`, this is optional as `cjoiner` can guess by the extension
+            * `type`: _{string}_ file type, `sass`, `js` or `yaml`, this is optional as `cjoiner` can guess by the extension
             * `major`: _{int}_ major release
             * `minor`: _{int}_ minor release
             * `bugfix`: _{int}_ bugfix number
@@ -110,6 +110,7 @@ Set file type to `yaml` and define sources in another `yaml` file:
           compilation  : 0
           output       : /javascripts/
         sass/css.sass  :
+          type         : sass
           name         : css
           extension    : css
           major        : 0

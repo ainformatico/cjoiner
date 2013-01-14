@@ -18,6 +18,7 @@ config :
       bugfix       : 0
       compilation  : 0
     sass/css.sass  :
+      type         : sass
       name         : css
       extension    : css
       major        : 1

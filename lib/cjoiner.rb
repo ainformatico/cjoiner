@@ -46,7 +46,7 @@ module Cjoiner #:nodoc
         # source file[s]
         sources = [] << File.expand_path(file_full_path)
         # do magic
-        if file_opts["type"] == "css" or file_opts["extension"] == "css"
+        if file_opts["type"] == "sass"
           concatenation = Cjoiner::Engines::Css.new(
           {
             :content => read_file(file_full_path),
