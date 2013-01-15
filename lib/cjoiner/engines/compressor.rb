@@ -10,6 +10,7 @@ module Cjoiner
           temp = temp_file "cjoiner.#{opts[:type]}", opts[:content]
           munge = !opts[:munge] ? "--nomunge" : ""
           @engine = `java -jar #{opts[:yui]} #{munge} --charset #{opts[:charset]} --type #{opts[:type]} #{temp.path}` if file_exists opts[:yui]
+          delete_file temp
         else
           case opts[:type]
             when :css

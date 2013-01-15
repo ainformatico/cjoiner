@@ -39,9 +39,28 @@ module Cjoiner
 
       # create a temporal file
       def temp_file(file, data)
-        temp = Tempfile.new(file) << data
+        # due to some java+windows+cygwin limitation
+        # we need to create our custom tempfile
+        if on_windows
+          name = "_cjoiner_tmp_#{file}"
+          temp = File.new(name, "w")
+          temp.write(data)
+        else
+          temp = Tempfile.new(file) << data
+        end
         temp.close
         temp
+      end
+
+      # delete a file, can be File or String
+      def delete_file(file)
+        item = file.kind_of?(File) ? file.path : file
+        File.delete item
+      end
+
+      # RUBY_PLATFORM tells cygwin or mswin
+      def on_windows
+        (RUBY_PLATFORM =~ /cygwin|mswin/) != nil
       end
 
       # return Pathname.new.expand_path
