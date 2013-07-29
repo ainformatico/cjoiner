@@ -1,4 +1,28 @@
 require 'sprockets'
+require 'pry'
+
+#NOTE: underscore.js interpolation hash(<%=(.*?)%>) conflicts with Sprockets
+#      and raises UndefinedConstantError.
+#
+#     In order to avoid this behavior I just avoid the raise statement
+#     and always return the value
+
+module Sprockets
+  class SourceLine
+    protected
+      def interpolate_constants!(result, constants)
+        result.gsub!(/<%=(.*?)%>/) do
+          constant = $1.strip
+          if value = constants[constant]
+            value
+          else
+            puts "WARNING: couldn't find constant `#{constant}' in #{inspect}"
+            value
+          end
+        end
+      end
+  end
+end
 
 module Cjoiner
   module Engines
