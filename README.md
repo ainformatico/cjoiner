@@ -63,11 +63,14 @@ This is the skeleton for the configuration file or the data object:
     * `common_dependencies`: _{array}_ general dependencies array
     * `common_path`: _{string}_ common path for all items
     * `common_output`: _{string}_ common output path for all files
+    *  undebugjs : _{boolean}_ remove _console_ statements
+    *  undebugjs_prefix : _{string}_ set the _console_ prefix
     * `files`: define files
         * `file`: _{string}_ path and name for file (assuming `common_path` as root) to process, ex: `javascripts/all.js`
             * `name`: _{string}_ output name
             * `extension`: _{string}_ output extension
             * `type`: _{string}_ file type, `sass`, `js` or `yaml`, this is optional as `cjoiner` can guess by the extension
+            *  undebugjs : _{boolean}_ remove _console_ statements per file configuration
             * `major`: _{int}_ major release
             * `minor`: _{int}_ minor release
             * `bugfix`: _{int}_ bugfix number
@@ -76,6 +79,18 @@ This is the skeleton for the configuration file or the data object:
             * `debug`: _{boolean}_ set debug for this file, overrides general debug flag
             * `dependencies`: _{array}_ custom dependencies array for this file
             * `output`: _{string}_ file output assuming `common_output` as root
+
+##### Remove _console_ statements
+This option must be activated globally or per-file configuration and only works for uncompressed files.
+This _engine_ is basically a simple _regex_ that remove all those lines matching [console statements](https://developers.google.com/chrome-developer-tools/docs/console-api).
+
+Also, you can set your own _console_ prefix. for example:
+
+```
+undebugjs_prefix : APP
+```
+
+will remove `APP.log([...])`, `APP.warn([...])`...
 
 ##### Join text files
 Set file type to `yaml` and define sources in another `yaml` file:
@@ -93,6 +108,7 @@ Set file type to `yaml` and define sources in another `yaml` file:
     config :
       common_path         : /work/project/
       common_output       : /work/project/output/
+      undebugjs           : true
       debug               : true
       common_dependencies : [
         javascripts/src/,

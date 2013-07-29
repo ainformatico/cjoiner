@@ -1,5 +1,4 @@
 require 'sprockets'
-require 'pry'
 
 #NOTE: underscore.js interpolation hash(<%=(.*?)%>) conflicts with Sprockets
 #      and raises UndefinedConstantError.
