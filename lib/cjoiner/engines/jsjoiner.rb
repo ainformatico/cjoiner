@@ -16,7 +16,7 @@ module Sprockets
             value
           else
             puts "WARNING: couldn't find constant `#{constant}' in #{inspect}"
-            value
+            "<%=#{constant}%>"
           end
         end
       end
