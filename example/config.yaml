@@ -3,6 +3,8 @@ config :
   common_output       : output/
   debug               : true
   compress            : true
+  undebugjs           : true
+  undebugjs_prefix    : 'APP'
   common_dependencies : [
     javascripts/src/,
     javascripts/src/lib/,

@@ -75,11 +75,13 @@ module Cjoiner #:nodoc
         end
 
         #undebugjs
-        if @config["undebugjs"] and file_opts["undebugjs"].nil? or file_opts["undebugjs"]
-          concatenation = Cjoiner::Engines::UndebugJS.new(
-            :prefix  => @config['undebugjs_prefix'],
-            :content => concatenation
-          ).render
+        if file_opts["extension"].to_sym == :js
+          if @config["undebugjs"] and file_opts["undebugjs"].nil? or file_opts["undebugjs"]
+            concatenation = Cjoiner::Engines::UndebugJS.new(
+              :prefix  => @config['undebugjs_prefix'],
+              :content => concatenation
+            ).render
+          end
         end
 
         # compress
@@ -95,6 +97,7 @@ module Cjoiner #:nodoc
 
         # save final file
         write_file output_file, compressed != "" ? compressed : concatenation
+
         # set custom output
         if custom_output
           output = @config["common_output"] ? @config["common_output"] : ""
