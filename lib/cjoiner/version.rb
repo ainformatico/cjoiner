@@ -1,4 +1,4 @@
 # -*- encoding: utf-8 -*-
 module Cjoiner
-  VERSION = "1.6.0" #:nodoc
+  VERSION = "1.6.1" #:nodoc
 end

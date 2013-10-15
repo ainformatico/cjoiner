@@ -91,6 +91,7 @@ module Cjoiner #:nodoc
             :type       => file_opts["extension"].to_sym,
             :yui        => @config['yui'],
             :charset    => @config['charset'],
+            :munge      => @config['munge'],
             :content    => concatenation
           }).render
         end
